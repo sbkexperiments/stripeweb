@@ -1,0 +1,37 @@
+# Package Files #
+*.jar
+*.war
+*.ear
+*.zip
+
+# IDE Files #
+.classpath
+.project
+.settings/
+.idea/
+*.iml
+
+dist
+build
+bin
+*.class
+target/
+test-output/
+build.xml
+/.metadata
+dist
+build
+bin
+rebel.xml
+/tests/
+/coverage/
+/cobertura.ser
+npm-debug.log
+package-lock.json
+node_modules
+
+.DS_Store
+
+# Dev Runner #
+.tmp/
+logs
