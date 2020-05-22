@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Stripe Payment Intent</title>
+    <link rel="stylesheet" href="https://stripe-samples.github.io/developer-office-hours/demo.css" type="text/css" />
+  </head>
+  <body>
+    <div id="main">
+      <div id="checkout">
+        <h1>Awesome Photos</h1>
+        <img src="https://picsum.photos/280/320" width="140" height="160" />
+        <form id="payment-form">
+          <div id="card-element">
+            <!-- Elements will create input elements here -->
+          </div>
+
+          <!-- We'll put the error messages in this element -->
+          <div id="card-errors" role="alert"></div>
+
+          <button id="submit">Pay</button>
+        </form>
+        <div id="card-message"></div>
+      </div>
+    </div>
+
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+      var stripe = Stripe('pk_test_CzTtN21gyIPOLLdwD8SCKEmz');
+      var elements = stripe.elements();
+
+      // Set up Stripe.js and Elements to use in checkout form
+      var style = {
+        base: {
+          color: "#32325d",
+        }
+      };
+
+      var card = elements.create("card", { style: style });
+      card.mount("#card-element");
+
+      card.on('change', ({error}) => {
+        const displayError = document.getElementById('card-errors');
+        if (error) {
+          displayError.textContent = error.message;
+        } else {
+          displayError.textContent = '';
+        }
+      });
+
+      var form = document.getElementById('payment-form');
+      const displayMessage = document.getElementById('card-message');
+
+      form.addEventListener('submit', function(ev) {
+        ev.preventDefault();
+        var response = fetch('/paymentintent/get-client-secret').then(function(response) {
+          return response.json();
+        }).then(function(responseJson) {
+          var clientSecret = responseJson.client_secret;
+          // Call stripe.confirmCardPayment() with the client secret.
+          stripe.confirmCardPayment(clientSecret, {
+            payment_method: {
+              card: card,
+              billing_details: {
+                name: 'Jenny Rosen'
+              }
+            }
+          }).then(function(result) {
+            if (result.error) {
+              // Show error to your customer (e.g., insufficient funds)
+              console.log(result.error.message);
+              displayMessage.textContent = result.error.message;
+            } else {
+              // The payment has been processed!
+              if (result.paymentIntent.status === 'succeeded') {
+                // Show a success message to your customer
+                // There's a risk of the customer closing the window before callback
+                // execution. Set up a webhook or plugin to listen for the
+                // payment_intent.succeeded event that handles any business critical
+                // post-payment actions.
+                displayMessage.textContent = 'Payment Successful!!';
+                form.style.display = "none";
+              }
+            }
+          });
+        });
+      });
+
+    </script>
+  </body>
+</html>

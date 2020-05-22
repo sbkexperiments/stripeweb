@@ -17,7 +17,7 @@ router.get('/cancel', function(req, res, next) {
 });
 
 router.post('/create-session', function(req, res, next) {
-  const session = stripe.checkout.sessions.create({
+  stripe.checkout.sessions.create({
     payment_method_types: ['card'],
     line_items: [{
       name: 'Awesome Photo',
