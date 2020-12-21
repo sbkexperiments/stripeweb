@@ -10,9 +10,10 @@ router.get('/init', function(req, res, next) {
 router.get('/get-client-secret', function(req, res, next) {
   stripe.paymentIntents.create({
     amount: 1099,
-    currency: 'usd',
+    currency: 'eur',
     // Verify your integration in this guide by including this parameter
     metadata: {integration_check: 'accept_a_payment'},
+    payment_method_types: ["ideal"]
   }, function(err, paymentIntent) {
     if (err) {
       console.log("err=" + JSON.stringify(err));

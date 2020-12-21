@@ -18,13 +18,13 @@ router.get('/cancel', function(req, res, next) {
 
 router.post('/create-session', function(req, res, next) {
   stripe.checkout.sessions.create({
-    payment_method_types: ['card'],
+    payment_method_types: ['card', 'ideal'],
     line_items: [{
       name: 'Awesome Photo',
       description: 'Awesome Photo',
       images: ['https://picsum.photos/280/320'],
       amount: 500,
-      currency: 'USD',
+      currency: 'EUR',
       quantity: 1,
     }],
     mode: 'payment',
